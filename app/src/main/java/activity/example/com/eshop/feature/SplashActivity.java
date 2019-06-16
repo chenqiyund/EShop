@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.utils.LogUtils;
-import butterknife.BindViews;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -22,7 +24,8 @@ public class SplashActivity extends AppCompatActivity {
     import butterknife.ButterKnife;
 
     public class SplashActivity extends AppCompatActivity implements Animator.AnimatorListener {
-        @BindViews(R.id.image_splash)
+
+        @BindView(R.id.image_splash)
         ImageView mIvSplash;
 
         @Override

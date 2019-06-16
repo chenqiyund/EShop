@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textAppearance="@string/AppBarText.Huge"
+            android:textAppearance="@style/AppBarText.Huge"
             android:text="首页"/>
 
     </android.support.v7.widget.Toolbar>
