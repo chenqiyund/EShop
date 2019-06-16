@@ -1,31 +1,31 @@
 package activity.example.com.eshop.feature;
 
-import android.app.Activity;
-import android.os.AsyncTask;
+
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-
-import java.lang.ref.WeakReference;
-
+import android.widget.Toast;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 import activity.example.com.eshop.R;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 
 /**
  * Created by Administrator on 2019/6/16.
  */
 
-public class EShopMainActivity extends AppCompatActivity {
+public class EShopMainActivity extends AppCompatActivity implements OnTabSelectListener {
+
+    @BindView(R.id.bottom_bar)
+    BottomBar mBottomBar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eshop_main);
-        setContentView(R.layout.test);
-        ButterKnife.bind(this);
 
         /**
          * 1. 设置监听
@@ -36,33 +36,34 @@ public class EShopMainActivity extends AppCompatActivity {
          * 解决方法：静态的内部类+弱引用
          *
          */
-
+        ButterKnife.bind(this);
+        initView();
     }
 
-    @OnClick(R.id.button)
-    public void onClick(View view){
-        startAsyncTask();
+    // 视图的初始化操作
+    private void initView() {
+        // 设置导航选择的监听事件
+        mBottomBar.setOnTabSelectListener(this);
     }
+    // 底部导航栏某一项选择的时候触发
+    @Override
+    public void onTabSelected(@IdRes int tabId) {
 
-    public void startAsyncTask(){
-        new MyAsyncTask(this).execute();
-    }
-
-    public static class MyAsyncTask extends AsyncTask<Void,Void,Void> {
-
-        private WeakReference<Activity> mWeakReference;
-
-        public MyAsyncTask(Activity activity) {
-            mWeakReference = new WeakReference<Activity>(activity);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            Log.i("TAG","doInBackground");
-            SystemClock.sleep(20*1000);
-
-            return null;
+        switch (tabId) {
+            case R.id.tab_home:
+                Toast.makeText(this, "首页", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tab_category:
+                Toast.makeText(this, "分类", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tab_cart:
+                Toast.makeText(this, "购物车", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tab_mine:
+                Toast.makeText(this, "我的", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                throw new UnsupportedOperationException("unsupport");
         }
     }
 }

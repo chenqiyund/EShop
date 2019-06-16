@@ -19,11 +19,8 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2019/6/15.
  */
 
-public class SplashActivity extends AppCompatActivity {
-    import butterknife.BindView;
-    import butterknife.ButterKnife;
 
-    public class SplashActivity extends AppCompatActivity implements Animator.AnimatorListener {
+public class SplashActivity extends AppCompatActivity implements Animator.AnimatorListener {
 
         @BindView(R.id.image_splash)
         ImageView mIvSplash;
@@ -36,7 +33,7 @@ public class SplashActivity extends AppCompatActivity {
 
             // 完成视图的操作
             initView();
-
+            // ctrl+alt+v 提取变量
         }
 
         private void initView() {
@@ -87,5 +84,5 @@ public class SplashActivity extends AppCompatActivity {
         public void onAnimationRepeat(Animator animation) {
 
         }
-    }
 }
+
