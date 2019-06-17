@@ -29,7 +29,7 @@ public class EShopMainActivity extends BaseActivity implements OnTabSelectListen
     BottomBar mBottomBar;
 
 
-    private TestFragment mHomeFragment;
+    private HomeFragment mHomeFragment;
     private CategoryFragment mCategoryFragment;
     private TestFragment mCartFragment;
     private TestFragment mMineFragment;
@@ -56,7 +56,7 @@ public class EShopMainActivity extends BaseActivity implements OnTabSelectListen
         switch (tabId) {
             case R.id.tab_home:
                 if (mHomeFragment==null){
-                    mHomeFragment = TestFragment.newInstance("HomeFragment");
+                    mHomeFragment = HomeFragment.newInstance();
                 }
                 // 切换Fragment
                 switchfragment(mHomeFragment);
@@ -119,7 +119,7 @@ public class EShopMainActivity extends BaseActivity implements OnTabSelectListen
     // 恢复因为系统重启造成的Fragmentmanager里面恢复的Fragment
     private void retrieveFragment() {
         FragmentManager manager = getSupportFragmentManager();
-        mHomeFragment = (TestFragment) manager.findFragmentByTag("HomeFragment");
+        mHomeFragment = (HomeFragment) manager.findFragmentByTag(HomeFragment.class.getName());
         mCategoryFragment = (CategoryFragment) manager.findFragmentByTag(CategoryFragment.class.getName());
         mCartFragment = (TestFragment) manager.findFragmentByTag("CartFragment");
         mMineFragment = (TestFragment) manager.findFragmentByTag("MineFragment");
