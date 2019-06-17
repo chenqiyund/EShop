@@ -1,5 +1,7 @@
 package activity.example.com.eshop.network;
 
+import android.test.AndroidTestCase;
+
 import com.google.gson.Gson;
 
 import activity.example.com.eshop.network.entity.CategoryRsp;
@@ -17,6 +19,7 @@ import static junit.framework.Assert.assertTrue;
 
 public class EShopClientTest {
     public void getCategory() throws Exception {
+
         Call call = EShopClient.getInstance().getCategory();
         Response response = call.execute();
         String string = response.body().string();
