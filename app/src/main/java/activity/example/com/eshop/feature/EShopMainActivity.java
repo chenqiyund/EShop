@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 import activity.example.com.eshop.R;
+import activity.example.com.eshop.base.BaseActivity;
 import activity.example.com.eshop.base.utils.TestFragment;
 import activity.example.com.eshop.feature.category.CategoryFragment;
 import butterknife.BindView;
@@ -22,7 +23,7 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2019/6/16.
  */
 
-public class EShopMainActivity extends AppCompatActivity implements OnTabSelectListener {
+public class EShopMainActivity extends BaseActivity implements OnTabSelectListener {
 
     @BindView(R.id.bottom_bar)
     BottomBar mBottomBar;
@@ -35,25 +36,13 @@ public class EShopMainActivity extends AppCompatActivity implements OnTabSelectL
 
     private Fragment mCurrentFragment;
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_eshop_main);
-
-        /**
-         * 1. 设置监听
-         * 2. 各种连接
-         * 3. 上下文的引用
-         *
-         * 非静态的内部类(匿名内部类) 会因为持有外部类的引用
-         * 解决方法：静态的内部类+弱引用
-         *
-         */
-        ButterKnife.bind(this);
-        initView();
+    protected int getContentViewLayout() {
+        return R.layout.activity_eshop_main;
     }
 
     // 视图的初始化操作
-    private void initView() {
+    @Override
+    protected void initView() {
         // 可以看一下Fragmentmanager里面是不是已经有了这些Fragment
         retrieveFragment();
         // alt+enter

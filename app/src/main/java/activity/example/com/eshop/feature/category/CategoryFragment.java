@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 import activity.example.com.eshop.R;
+import activity.example.com.eshop.base.BaseFragment;
 import activity.example.com.eshop.network.EShopClient;
 import activity.example.com.eshop.network.core.UICallback;
 import activity.example.com.eshop.network.entity.CategoryPrimary;
@@ -36,7 +37,7 @@ import okhttp3.Response;
  * Created by Administrator on 2019/6/17.
  */
 
-public class CategoryFragment extends Fragment {
+public class CategoryFragment extends BaseFragment {
     @BindView(R.id.standard_toolbar_title)
     TextView mToolbarTitle;
     @BindView(R.id.standard_toolbar)
@@ -53,23 +54,15 @@ public class CategoryFragment extends Fragment {
         return new CategoryFragment();
     }
 
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_category,container,false);
-        ButterKnife.bind(this,view);
-        return view;
+    protected int getContentViewLayout() {
+        return R.layout.fragment_category;
     }
 
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // 初始化视图的操作
-        initView();
-    }
-
-    private void initView() {
+    protected void initView() {
 
         // 处理toolbar
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -130,17 +123,17 @@ public class CategoryFragment extends Fragment {
 
      // 点击一级分类：展示相应二级分类
     @OnItemClick(R.id.list_category)
-    public void onItemClick(int postion){
+    public void onItemClick(int postion) {
         chooseCategory(postion);
     }
 
      // 点击二级分类
     @OnItemClick(R.id.list_children)
-    public void onChildrenClick(int position){
+    public void onChildrenClick(int position) {
 
         //会完善到跳转页面的
         String name = mChildrenAdapter.getItem(position).getName();
-        Toast.makeText(getContext(),name , Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), name, Toast.LENGTH_SHORT).show();
     }
 
     private void initToolbar() {
@@ -178,4 +171,5 @@ public class CategoryFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
