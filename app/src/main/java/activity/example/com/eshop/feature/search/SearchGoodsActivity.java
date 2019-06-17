@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseActivity;
+import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
 import activity.example.com.eshop.network.entity.Filter;
 
 /**
@@ -30,6 +31,7 @@ public class SearchGoodsActivity extends BaseActivity{
 
     @Override
     protected void initView() {
-
+        // toolbar的展示
+        new ToolbarWrapper(this);
     }
 }
