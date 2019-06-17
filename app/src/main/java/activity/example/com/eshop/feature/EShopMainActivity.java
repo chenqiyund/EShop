@@ -9,11 +9,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.utils.TestFragment;
+import activity.example.com.eshop.feature.category.CategoryFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -26,8 +26,10 @@ public class EShopMainActivity extends AppCompatActivity implements OnTabSelectL
 
     @BindView(R.id.bottom_bar)
     BottomBar mBottomBar;
+
+
     private TestFragment mHomeFragment;
-    private TestFragment mCategoryFragment;
+    private CategoryFragment mCategoryFragment;
     private TestFragment mCartFragment;
     private TestFragment mMineFragment;
 
@@ -73,7 +75,7 @@ public class EShopMainActivity extends AppCompatActivity implements OnTabSelectL
                 break;
             case R.id.tab_category:
                 if (mCategoryFragment==null){
-                    mCategoryFragment = TestFragment.newInstance("CategoryFragment");
+                    mCategoryFragment = CategoryFragment.newInstance();
                 }
                 switchfragment(mCategoryFragment);
                 break;
@@ -109,22 +111,27 @@ public class EShopMainActivity extends AppCompatActivity implements OnTabSelectL
             transaction.show(target);
         }else {
             // 为了方便找到Fragment，我们是可以设置Tag
-            String tag = ((TestFragment)target).getArgumentText();
+            String tag;
+            if (target instanceof TestFragment){
+                tag = ((TestFragment)target).getArgumentText();
+            }else {
+
+                // 把类名作为tag
+                tag = target.getClass().getName();
+            }
 
             // 添加Fragment并设置Tag
             transaction.add(R.id.layout_container,target,tag);
         }
 
         transaction.commit();
-
         mCurrentFragment=target;
-
     }
     // 恢复因为系统重启造成的Fragmentmanager里面恢复的Fragment
     private void retrieveFragment() {
         FragmentManager manager = getSupportFragmentManager();
         mHomeFragment = (TestFragment) manager.findFragmentByTag("HomeFragment");
-        mCategoryFragment = (TestFragment) manager.findFragmentByTag("CategoryFragment");
+        mCategoryFragment = (CategoryFragment) manager.findFragmentByTag(CategoryFragment.class.getName());
         mCartFragment = (TestFragment) manager.findFragmentByTag("CartFragment");
         mMineFragment = (TestFragment) manager.findFragmentByTag("MineFragment");
     }
