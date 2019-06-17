@@ -40,7 +40,7 @@ public class TestFragment extends Fragment {
         mTextView.setText(getArgumentText());
         return view;
     }
-    
+
     public String getArgumentText(){
         return getArguments().getString(FRAGMENT_TEXT);
     }
