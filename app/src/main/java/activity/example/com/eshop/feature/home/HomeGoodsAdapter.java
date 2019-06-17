@@ -11,6 +11,7 @@ import java.util.List;
 
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseListAdapter;
+import activity.example.com.eshop.base.wrapper.ToastWrapper;
 import activity.example.com.eshop.network.entity.CategoryHome;
 import activity.example.com.eshop.network.entity.Picture;
 import activity.example.com.eshop.network.entity.SimpleGoods;
@@ -71,7 +72,7 @@ public class HomeGoodsAdapter extends BaseListAdapter<CategoryHome,HomeGoodsAdap
                     @Override
                     public void onClick(View v) {
                         SimpleGoods simpleGoods = goodsList.get(index);
-                        Toast.makeText(getContext(), simpleGoods.getName(), Toast.LENGTH_SHORT).show();
+                        ToastWrapper.show(simpleGoods.getName());
                     }
                 });
             }
@@ -79,7 +80,7 @@ public class HomeGoodsAdapter extends BaseListAdapter<CategoryHome,HomeGoodsAdap
 
         @OnClick(R.id.text_category)
         void onclick(){
-            Toast.makeText(getContext(),mCategoryHome.getName() , Toast.LENGTH_SHORT).show();
+            ToastWrapper.show(mCategoryHome.getName());
         }
     }
 

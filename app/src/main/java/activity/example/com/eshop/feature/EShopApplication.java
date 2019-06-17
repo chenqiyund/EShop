@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
 
+import activity.example.com.eshop.base.wrapper.ToastWrapper;
+
 /**
  * Created by Administrator on 2019/6/16.
  */
@@ -21,7 +23,8 @@ public class EShopApplication extends Application{
         }
         LeakCanary.install(this);
 
-        // 正常的app初始化
+        // Toast的包装类的初始化
+        ToastWrapper.init(this);
 
     }
 }

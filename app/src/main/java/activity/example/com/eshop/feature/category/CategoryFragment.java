@@ -23,6 +23,7 @@ import java.util.List;
 
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseFragment;
+import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
 import activity.example.com.eshop.network.EShopClient;
 import activity.example.com.eshop.network.core.UICallback;
 import activity.example.com.eshop.network.entity.CategoryPrimary;
@@ -137,16 +138,8 @@ public class CategoryFragment extends BaseFragment {
     }
 
     private void initToolbar() {
-        // Fragment显示选项菜单
-        setHasOptionsMenu(true);
-        // 处理toolbar
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(mToolbar);
-        // 处理actionbar不展示默认的标题
-        activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        // 设置左上方的返回箭头
-        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbarTitle.setText(R.string.category_title);
+        // 利用包装好的Toolbar
+        new ToolbarWrapper(this).setCustomTitle(R.string.category_title);
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
