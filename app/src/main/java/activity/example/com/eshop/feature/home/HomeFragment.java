@@ -25,6 +25,8 @@ import activity.example.com.eshop.base.wrapper.PtrWrapper;
 import activity.example.com.eshop.base.wrapper.ToastWrapper;
 import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
 import activity.example.com.eshop.network.EShopClient;
+import activity.example.com.eshop.network.core.ApiPath;
+import activity.example.com.eshop.network.core.ResponseEntity;
 import activity.example.com.eshop.network.core.UICallback;
 import activity.example.com.eshop.network.entity.Banner;
 import activity.example.com.eshop.network.entity.HomeBannerRsp;
@@ -59,6 +61,8 @@ public class HomeFragment extends BaseFragment {
     private BannerAdapter<Banner> mBannerAdapter;
     private HomeGoodsAdapter mGoodsAdapter;
     private PtrWrapper mPtrWrapper;
+    private boolean mBannerRefreshed = false;
+    private boolean mCategoryRefreshed = false;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -77,6 +81,8 @@ public class HomeFragment extends BaseFragment {
         mPtrWrapper = new PtrWrapper(this,false) {
             @Override
             protected void onRefresh() {
+                mBannerRefreshed = false;
+                mCategoryRefreshed = false;
                 getHomeData();
             }
 
@@ -123,58 +129,43 @@ public class HomeFragment extends BaseFragment {
     public void getHomeData() {
 
         // 轮播图和促销单品的数据
-        Call bannerCall = EShopClient.getInstance().getHomeBanner();
-        bannerCall.enqueue(new UICallback() {
-            @Override
-            public void onFailureInUI(Call call, IOException e) {
-                ToastWrapper.show("请求失败"+e.getMessage());
-            }
+        UICallback bannerCallback = new UICallback() {
 
             @Override
-            public void onResponseInUI(Call call, Response response) throws IOException {
-
-                // 返回成功
-                if (response.isSuccessful()){
-                    String json = response.body().string();
-
-                    // 解析拿到数据
-                    HomeBannerRsp bannerRsp = new Gson().fromJson(json, HomeBannerRsp.class);
-                    if (bannerRsp.getStatus().isSucceed()){
-                        // 数据拿到了，首先给bannerAdapter,另外是给促销单品
-                        mBannerAdapter.reset(bannerRsp.getData().getBanners());
-                        setPromoteGoods(bannerRsp.getData().getGoodsList());
-                    }else {
-                        ToastWrapper.show(bannerRsp.getStatus().getErrorDesc());
-                    }
+            public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
+                mBannerRefreshed = true;
+                if (isSucces){
+                    // 数据拿到了，首先给bannerAdapter,另外是给促销单品
+                    HomeBannerRsp bannerRsp = (HomeBannerRsp) responseEntity;
+                    mBannerAdapter.reset(bannerRsp.getData().getBanners());
+                    setPromoteGoods(bannerRsp.getData().getGoodsList());
+                }
+                if (mBannerRefreshed && mCategoryRefreshed) {
+                    //两个接口都拿到数据之后，停止刷新
+                    mPtrWrapper.stopRefresh();
                 }
             }
-        });
+        };
 
-        // 推荐的分类商品
-        Call categoryCall = EShopClient.getInstance().getHomeCategory();
-        categoryCall.enqueue(new UICallback() {
-            @Override
-            public void onFailureInUI(Call call, IOException e) {
-                ToastWrapper.show("请求失败"+e.getMessage());
-            }
+        // 首页分类商品和推荐
+        UICallback categoryCallback = new UICallback() {
 
             @Override
-            public void onResponseInUI(Call call, Response response) throws IOException {
-                if (response.isSuccessful()){
-                    String json = response.body().string();
-                    HomeCategoryRsp categoryRsp = new Gson().fromJson(json, HomeCategoryRsp.class);
-                    if (categoryRsp.getStatus().isSucceed()){
-                        // 拿到了推荐分类商品的数据
-                        mGoodsAdapter.reset(categoryRsp.getData());
-                    }else {
-                        ToastWrapper.show(categoryRsp.getStatus().getErrorDesc());
-                    }
+            public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
+                mCategoryRefreshed = true;
+                if (isSucces) {
+                    HomeCategoryRsp categoryRsp = (HomeCategoryRsp) responseEntity;
+                    mGoodsAdapter.reset(categoryRsp.getData());
+                }
+                if (mBannerRefreshed && mCategoryRefreshed) {
+                    //两个接口都拿到数据之后，停止刷新
+                    mPtrWrapper.stopRefresh();
                 }
             }
-        });
 
-        // 拿到数据之后，停止刷新
-        mPtrWrapper.stopRefresh();
+        };
+        EShopClient.getInstance().enqueue(ApiPath.HOME_DATA,null,HomeBannerRsp.class,bannerCallback);
+        EShopClient.getInstance().enqueue(ApiPath.HOME_CATEGORY,null,HomeCategoryRsp.class,categoryCallback);
     }
 
     // 设置促销单品的展示
