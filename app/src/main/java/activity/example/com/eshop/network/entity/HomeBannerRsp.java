@@ -4,18 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import activity.example.com.eshop.network.core.ResponseEntity;
+
 /**
  * 首页轮播图接口响应体.
  */
 
-public class HomeBannerRsp {
+public class HomeBannerRsp extends ResponseEntity {
     @SerializedName("data") private Data mData;
-
-    @SerializedName("status") private Status mStatus;
-
-    public Status getStatus() {
-        return mStatus;
-    }
 
     public Data getData() {
         return mData;

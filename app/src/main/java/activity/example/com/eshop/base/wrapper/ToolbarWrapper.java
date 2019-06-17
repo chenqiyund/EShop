@@ -7,6 +7,7 @@ import android.widget.TextView;
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseActivity;
 import activity.example.com.eshop.base.BaseFragment;
+import com.squareup.picasso.Picasso;
 import butterknife.ButterKnife;
 
 /**
@@ -56,6 +57,7 @@ public class ToolbarWrapper {
         mTvTitle = ButterKnife.findById(toolbar, R.id.standard_toolbar_title);
         // 设置Toolbar作为Actionbar展示
         mBaseActivity.setSupportActionBar(toolbar);
+
     }
 
     // 为了方便链式调用，所以返回值为本身
