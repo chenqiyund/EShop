@@ -98,7 +98,7 @@ public class CategoryFragment extends Fragment {
 
         if (itemId == R.id.menu_search) {
 
-            // TODO: 2017/2/24 后期会跳转到搜素页面上
+            // 后期会跳转到搜素页面上
             Toast.makeText(getContext(), "点击了搜索", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
