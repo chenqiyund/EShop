@@ -1,6 +1,7 @@
 package activity.example.com.eshop.feature.category;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,11 +25,14 @@ import java.util.List;
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseFragment;
 import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
+import activity.example.com.eshop.feature.search.SearchGoodsActivity;
 import activity.example.com.eshop.network.EShopClient;
+import activity.example.com.eshop.network.core.ApiPath;
 import activity.example.com.eshop.network.core.ResponseEntity;
 import activity.example.com.eshop.network.core.UICallback;
 import activity.example.com.eshop.network.entity.CategoryPrimary;
 import activity.example.com.eshop.network.entity.CategoryRsp;
+import activity.example.com.eshop.network.entity.Filter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
@@ -124,9 +128,9 @@ public class CategoryFragment extends BaseFragment {
     @OnItemClick(R.id.list_children)
     public void onChildrenClick(int position) {
 
-        //会完善到跳转页面的
-        String name = mChildrenAdapter.getItem(position).getName();
-        Toast.makeText(getContext(), name, Toast.LENGTH_SHORT).show();
+        // 跳转到搜索页面
+        int categoryId = mChildrenAdapter.getItem(position).getId();
+        navigateToSearch(categoryId);
     }
 
     private void initToolbar() {
@@ -151,10 +155,18 @@ public class CategoryFragment extends BaseFragment {
 
         if (itemId == R.id.menu_search) {
 
-            // 后期会跳转到搜素页面上
-            Toast.makeText(getContext(), "点击了搜索", Toast.LENGTH_SHORT).show();
+            int position = mListCategory.getCheckedItemPosition();
+            int id = mCategoryAdapter.getItem(position).getId();
+            navigateToSearch(id);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
+    private void navigateToSearch(int categoryId) {
+        // 根据id构建Filter，然后跳转页面
+        Filter filter = new Filter();
+        filter.setCategoryId(categoryId);
+        Intent intent = SearchGoodsActivity.getStartIntent(getContext(), filter);
+        getActivity().startActivity(intent);
+    }
 }

@@ -3,7 +3,7 @@ package activity.example.com.eshop.network.entity;
 import android.support.annotation.StringDef;
 
 import com.google.gson.annotations.SerializedName;
-
+import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
