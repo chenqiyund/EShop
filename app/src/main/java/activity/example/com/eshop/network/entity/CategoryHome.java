@@ -8,11 +8,7 @@ import java.util.List;
  * Created by Administrator on 2019/6/17.
  */
 
-public class CategoryHome  {
-
-    private int id;
-
-    private String name;
+public class CategoryHome extends CategoryBase {
     @SerializedName("goods")
     private List<SimpleGoods> mHotGoodsList; // 首页分类的推荐商品.
 
