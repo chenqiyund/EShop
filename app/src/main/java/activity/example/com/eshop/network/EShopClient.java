@@ -1,8 +1,12 @@
 package activity.example.com.eshop.network;
 
 
+import com.google.gson.Gson;
+
 import activity.example.com.eshop.network.entity.CategoryRsp;
+import activity.example.com.eshop.network.entity.SearchReq;
 import okhttp3.Call;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -59,6 +63,21 @@ public class EShopClient {
         Request request = new Request.Builder()
                 .get()
                 .url(BASE_URL+"/home/category")
+                .build();
+        return mOkHttpClient.newCall(request);
+    }
+    // 搜索：搜索商品
+    public Call getSearch(SearchReq searchReq){
+
+        // 构建请求体
+        String param = new Gson().toJson(searchReq);
+        RequestBody body = new FormBody.Builder()
+                .add("json",param)
+                .build();
+
+        Request request = new Request.Builder()
+                .post(body)
+                .url(BASE_URL+"/search")
                 .build();
         return mOkHttpClient.newCall(request);
     }

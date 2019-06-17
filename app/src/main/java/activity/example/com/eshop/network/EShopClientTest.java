@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import activity.example.com.eshop.network.entity.CategoryRsp;
 import activity.example.com.eshop.network.entity.HomeBannerRsp;
 import activity.example.com.eshop.network.entity.HomeCategoryRsp;
+import activity.example.com.eshop.network.entity.SearchReq;
+import activity.example.com.eshop.network.entity.SearchRsp;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -42,5 +44,13 @@ public class EShopClientTest {
         String string = response.body().string();
         HomeCategoryRsp categoryRsp = new Gson().fromJson(string, HomeCategoryRsp.class);
         assertTrue(categoryRsp.getStatus().isSucceed());
+    }
+    public void getSearch() throws Exception{
+        SearchReq searchReq = new SearchReq();
+        Call call = EShopClient.getInstance().getSearch(searchReq);
+        Response response = call.execute();
+        String json = response.body().string();
+        SearchRsp searchRsp = new Gson().fromJson(json, SearchRsp.class);
+        assertTrue(searchRsp.getStatus().isSucceed());
     }
 }
