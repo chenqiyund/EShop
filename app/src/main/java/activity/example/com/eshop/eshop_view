@@ -217,5 +217,12 @@ UiCallback：为了减少代码的重复。
 完成自定义的弹窗
 完成商品页面的视图展示
 
+布局优化
+merge：根标签，Root 不为空null，attachToRoot true
+
+商品页面实现：
+1. PopupWindow完成
+2. 商品页面实现
+
 
 

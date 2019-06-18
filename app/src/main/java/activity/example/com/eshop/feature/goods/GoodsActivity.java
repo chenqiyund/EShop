@@ -14,6 +14,7 @@ import java.util.List;
 
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseActivity;
+import activity.example.com.eshop.base.GoodsPopupWindow;
 import activity.example.com.eshop.base.wrapper.ToastWrapper;
 import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
 import activity.example.com.eshop.network.api.ApiGoodsInfo;
@@ -42,6 +43,8 @@ public class GoodsActivity extends BaseActivity implements ViewPager.OnPageChang
     ViewPager mGoodsPager;
     @BindViews({R.id.text_tab_goods,R.id.text_tab_details,R.id.text_tab_comments})
     List<TextView> mTvTabList;
+    private GoodsInfo mGoodsInfo;
+    private GoodsPopupWindow mGoodsPopupWindow;
 
     // 提供一个跳转的方法
     public static Intent getStartIntent(Context context, int goodsId) {
@@ -94,12 +97,28 @@ public class GoodsActivity extends BaseActivity implements ViewPager.OnPageChang
             case R.id.button_show_cart:
                 break;
             case R.id.button_add_cart:
+                showGoodsPopupWindow();
                 break;
             case R.id.button_buy:
+                showGoodsPopupWindow();
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported View");
         }
+    }
+    // 展示商品弹窗
+    private void showGoodsPopupWindow() {
+        if (mGoodsInfo==null) return;
+        if (mGoodsPopupWindow==null){
+            mGoodsPopupWindow = new GoodsPopupWindow(this,mGoodsInfo);
+        }
+        mGoodsPopupWindow.show(new GoodsPopupWindow.OnConfirmListener() {
+            @Override
+            public void onConfirm(int number) {
+                ToastWrapper.show("Confirm:"+number);
+                mGoodsPopupWindow.dismiss();
+            }
+        });
     }
     // 三个TextView标题的切换事件
     @OnClick({R.id.text_tab_goods,R.id.text_tab_details,R.id.text_tab_comments})
@@ -119,9 +138,9 @@ public class GoodsActivity extends BaseActivity implements ViewPager.OnPageChang
                 if (isSucces){
                     GoodsInfoRsp goodsInfoRsp = (GoodsInfoRsp) responseEntity;
                     // 请求得到的商品详情的响应数据
-                    GoodsInfo goodsInfo = goodsInfoRsp.getData();
+                    mGoodsInfo = goodsInfoRsp.getData();
                     // 数据要给ViewPager的适配器设置上，展示
-                    mGoodsPager.setAdapter(new GoodsPagerAdapter(getSupportFragmentManager(),goodsInfo));
+                    mGoodsPager.setAdapter(new GoodsPagerAdapter(getSupportFragmentManager(), mGoodsInfo));
                     // 默认选择第一项
                     chooseTab(0);
 
