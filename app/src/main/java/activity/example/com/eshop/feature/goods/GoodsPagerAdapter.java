@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import activity.example.com.eshop.base.utils.TestFragment;
+import activity.example.com.eshop.feature.goods.info.GoodsInfoFragment;
 import activity.example.com.eshop.network.entity.GoodsInfo;
 
 /**
@@ -26,7 +27,7 @@ public class GoodsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return TestFragment.newInstance(mGoodsInfo.getName());
+                return GoodsInfoFragment.newInstance(mGoodsInfo);
             case 1:
                 return TestFragment.newInstance("goods details");
             case 2:

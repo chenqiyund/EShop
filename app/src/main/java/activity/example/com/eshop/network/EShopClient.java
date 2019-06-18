@@ -122,7 +122,7 @@ public class EShopClient {
 
 
     // 根据响应Response，将响应体转换成响应的实体类
-    public  <T extends ResponseEntity>T getResponseEntity(Response response, Class<T> clazz) throws IOException {
+    public <T extends ResponseEntity>T getResponseEntity(Response response, Class<T> clazz) throws IOException {
         // 没有成功
         if (!response.isSuccessful()){
             throw new IOException("Response code is"+response.code());

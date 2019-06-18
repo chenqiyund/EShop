@@ -224,5 +224,25 @@ merge：根标签，Root 不为空null，attachToRoot true
 1. PopupWindow完成
 2. 商品页面实现
 
+总结：
+1. 网络请求：OkHttp
+    封装：服务器接口对应到java接口
+    请求和取消：基类
+    Gson：学会分析响应体数据Json字符串如何转换为实体类
+2. 自定义的视图：最多的组合控件
+    构造方法
+    接口回调的方法
+        A abc();
+        A a = new Aimpl();   a.abc();
+        A b = new Bimpl();   b.abc();
+    布局的初始化和控件的处理
+3. 基类：Activity、Fragment、Adapter
+    泛型：自定义泛型、泛型通配符
+        泛型类、泛型方法
+4. 包装类：其实就是将某一个控件、工具等的基本使用进一步包装。
+
+5. 其他资源：菜单、动画..
+    <layer-list> 比如画一个背景
+
 
 
