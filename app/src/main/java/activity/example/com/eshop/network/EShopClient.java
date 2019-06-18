@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 
+import activity.example.com.eshop.network.core.ApiInterface;
 import activity.example.com.eshop.network.core.RequestParam;
 import activity.example.com.eshop.network.core.ResponseEntity;
 import activity.example.com.eshop.network.core.UICallback;
@@ -95,26 +96,23 @@ public class EShopClient {
     // 为了方便，我们把同步和异步都提供出来。
 
     // 同步：直接拿到response里面的实体类数据
-    public <T extends ResponseEntity>T execute(String path,
-                                               RequestParam requestParam,
-                                               Class<T> clazz) throws IOException {
+    public <T extends ResponseEntity>T execute(ApiInterface apiInterface) throws IOException {
 
         // 把请求的构建写到一个方法里面
-        Response response = newApiCall(path, requestParam).execute();
+        Response response = newApiCall(apiInterface).execute();
 
         // 异步里面会不会也用到呢？所以写到一个方法里去
+        Class<T> clazz = (Class<T>) apiInterface.getResponseEntity();
         return getResponseEntity(response,clazz);
     }
     // 异步回调：最后要创建UICallBack
-    public Call enqueue(String path,
-                        RequestParam requestParam,
-                        Class<? extends ResponseEntity> clazz,
+    public Call enqueue(ApiInterface apiInterface,
                         UICallback uiCallback){
 
         // 构建call模型
-        Call call = newApiCall(path, requestParam);
+        Call call = newApiCall(apiInterface);
         // 告诉uicallback里面的数据要转换的类型
-        uiCallback.setResponseType(clazz);
+        uiCallback.setResponseType(apiInterface.getResponseEntity());
         // 为了规范，我们在方法里面直接执行异步方法，就需要一个UiCallback，所以通过参数传递
         call.enqueue(uiCallback);
         return call;
@@ -132,15 +130,15 @@ public class EShopClient {
     }
 
     // 根据参数构建请求
-    private Call newApiCall(String path, RequestParam requestParam) {
+    private Call newApiCall(ApiInterface apiInterface) {
 
         // 拆开写
         Request.Builder builder = new Request.Builder();
-        builder.url(BASE_URL+path);
+        builder.url(BASE_URL+apiInterface.getPath());
 
         // 有请求体的话，是Post请求
-        if (requestParam!=null){
-            String json = mGson.toJson(requestParam);
+        if (apiInterface.getRequestParam()!=null){
+            String json = mGson.toJson(apiInterface.getRequestParam());
             RequestBody requestBody = new FormBody.Builder()
                     .add("json",json)
                     .build();
