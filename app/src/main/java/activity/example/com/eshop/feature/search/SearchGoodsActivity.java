@@ -53,6 +53,7 @@ public class SearchGoodsActivity extends BaseActivity {
     private Pagination mPagination = new Pagination();
     private Call mSearchCall;
     private Paginated mPaginated;
+    private long mLastRefreshTime;
     // 因为需要传递数据，为了规范我们传递的数据内容，所以我们在此页面对外提供一个跳转的方法
     public static Intent getStartIntent(Context context, Filter filter) {
         Intent intent = new Intent(context, SearchGoodsActivity.class);
@@ -160,7 +161,10 @@ public class SearchGoodsActivity extends BaseActivity {
                 throw new UnsupportedOperationException();
         }
         mFilter.setSortBy(sortBy);
-        mPtrWrapper.autoRefresh();
+        // 简单解决切换过快的问题
+        long time = 2000+mLastRefreshTime-System.currentTimeMillis();
+        time = time<0?0:time;
+        mPtrWrapper.postRefreshDelayed(time);
     }
 
     // 网络请求获取数据
@@ -170,6 +174,7 @@ public class SearchGoodsActivity extends BaseActivity {
         }
 
         if (isRefresh){
+            mLastRefreshTime = System.currentTimeMillis();
             // 刷新：页数从1开始
             mPagination.reset();
             // 将ListView定位到第一条
