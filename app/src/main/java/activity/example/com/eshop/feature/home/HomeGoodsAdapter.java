@@ -1,5 +1,6 @@
 package activity.example.com.eshop.feature.home;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import java.util.List;
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseListAdapter;
 import activity.example.com.eshop.base.wrapper.ToastWrapper;
+import activity.example.com.eshop.feature.goods.GoodsActivity;
 import activity.example.com.eshop.network.entity.CategoryHome;
 import activity.example.com.eshop.network.entity.Picture;
 import activity.example.com.eshop.network.entity.SimpleGoods;
@@ -71,8 +73,10 @@ public class HomeGoodsAdapter extends BaseListAdapter<CategoryHome,HomeGoodsAdap
                 mImageViews[i].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        // 点击推荐商品，跳转到详情页
                         SimpleGoods simpleGoods = goodsList.get(index);
-                        ToastWrapper.show(simpleGoods.getName());
+                        Intent intent = GoodsActivity.getStartIntent(getContext(), simpleGoods.getId());
+                        getContext().startActivity(intent);
                     }
                 });
             }

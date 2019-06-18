@@ -20,6 +20,7 @@
         <activity android:name=".feature.EShopMainActivity">
         </activity>
         <activity android:name=".feature.SplashActivity" />
+        <activity android:name=".feature.goods.GoodsActivity"></activity>
     </application>
 
 </manifest>

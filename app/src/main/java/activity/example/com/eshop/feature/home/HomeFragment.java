@@ -1,5 +1,6 @@
 package activity.example.com.eshop.feature.home;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +25,7 @@ import activity.example.com.eshop.base.widgets.banner.BannerLayout;
 import activity.example.com.eshop.base.wrapper.PtrWrapper;
 import activity.example.com.eshop.base.wrapper.ToastWrapper;
 import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
+import activity.example.com.eshop.feature.goods.GoodsActivity;
 import activity.example.com.eshop.network.EShopClient;
 import activity.example.com.eshop.network.core.ApiPath;
 import activity.example.com.eshop.network.core.ResponseEntity;
@@ -186,7 +188,10 @@ public class HomeFragment extends BaseFragment {
             mIvPromotes[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ToastWrapper.show(simpleGoods.getName());
+                    // 点击促销单品跳转到商品详情页
+                    int simpleGoodsId = simpleGoods.getId();
+                    Intent intent = GoodsActivity.getStartIntent(getContext(), simpleGoodsId);
+                    getActivity().startActivity(intent);
                 }
             });
         }

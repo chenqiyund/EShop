@@ -17,6 +17,7 @@ import activity.example.com.eshop.base.widgets.SimpleSearchView;
 import activity.example.com.eshop.base.wrapper.PtrWrapper;
 import activity.example.com.eshop.base.wrapper.ToastWrapper;
 import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
+import activity.example.com.eshop.feature.goods.GoodsActivity;
 import activity.example.com.eshop.network.EShopClient;
 import activity.example.com.eshop.network.core.ApiPath;
 import activity.example.com.eshop.network.core.ResponseEntity;
@@ -120,7 +121,10 @@ public class SearchGoodsActivity extends BaseActivity {
     @OnItemClick(R.id.list_goods)
     public void goodsItemClick(int position) {
         //  跳转到详情页
-        ToastWrapper.show(mGoodsAdapter.getItem(position).getName());
+        // 跳转到详情页
+        int id = mGoodsAdapter.getItem(position).getId();
+        Intent intent = GoodsActivity.getStartIntent(this, id);
+        startActivity(intent);
     }
 
     @OnClick({R.id.text_is_hot, R.id.text_most_expensive, R.id.text_cheapest})
