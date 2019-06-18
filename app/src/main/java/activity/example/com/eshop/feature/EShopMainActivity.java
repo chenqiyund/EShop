@@ -15,6 +15,7 @@ import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseActivity;
 import activity.example.com.eshop.base.utils.TestFragment;
 import activity.example.com.eshop.feature.category.CategoryFragment;
+import activity.example.com.eshop.feature.home.HomeFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

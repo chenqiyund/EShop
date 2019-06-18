@@ -12,15 +12,26 @@ import java.util.List;
 
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseActivity;
+import activity.example.com.eshop.base.utils.LogUtils;
 import activity.example.com.eshop.base.widgets.SimpleSearchView;
 import activity.example.com.eshop.base.wrapper.PtrWrapper;
 import activity.example.com.eshop.base.wrapper.ToastWrapper;
 import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
+import activity.example.com.eshop.network.EShopClient;
+import activity.example.com.eshop.network.core.ApiPath;
+import activity.example.com.eshop.network.core.ResponseEntity;
+import activity.example.com.eshop.network.core.UICallback;
 import activity.example.com.eshop.network.entity.Filter;
+import activity.example.com.eshop.network.entity.Paginated;
+import activity.example.com.eshop.network.entity.Pagination;
+import activity.example.com.eshop.network.entity.SearchReq;
+import activity.example.com.eshop.network.entity.SearchRsp;
+import activity.example.com.eshop.network.entity.SimpleGoods;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import okhttp3.Call;
 
 /**
  * Created by Administrator on 2019/6/17.
@@ -33,11 +44,14 @@ public class SearchGoodsActivity extends BaseActivity {
     SimpleSearchView mSearchView;
     @BindView(R.id.list_goods)
     ListView mGoodsListView;
-    @BindViews({R.id.text_is_hot,R.id.text_most_expensive,R.id.text_category})
+    @BindViews({R.id.text_is_hot, R.id.text_most_expensive, R.id.text_cheapest})
     List<TextView> mTvOrderList;
     private Filter mFilter;
     private PtrWrapper mPtrWrapper;
     private SearchGoodsAdapter mGoodsAdapter;
+    private Pagination mPagination = new Pagination();
+    private Call mSearchCall;
+    private Paginated mPaginated;
     // 因为需要传递数据，为了规范我们传递的数据内容，所以我们在此页面对外提供一个跳转的方法
     public static Intent getStartIntent(Context context, Filter filter) {
         Intent intent = new Intent(context, SearchGoodsActivity.class);
@@ -62,7 +76,7 @@ public class SearchGoodsActivity extends BaseActivity {
         mFilter = new Gson().fromJson(filterStr, Filter.class);
 
         // 刷新加载
-        mPtrWrapper = new PtrWrapper(this,true) {
+        mPtrWrapper = new PtrWrapper(this, true) {
 
             // 刷新
             @Override
@@ -75,7 +89,12 @@ public class SearchGoodsActivity extends BaseActivity {
             @Override
             protected void onLoadMore() {
                 // 也是要进行请求，和刷新是一个接口，只是分页的参数不一样
-                searchGoods(false);
+                if (mPaginated.hasMore()) {
+                    searchGoods(false);
+                } else {
+                    mPtrWrapper.stopRefresh();
+                    ToastWrapper.show(R.string.msg_load_more_complete);
+                }
             }
         };
 
@@ -99,27 +118,94 @@ public class SearchGoodsActivity extends BaseActivity {
     }
 
     @OnItemClick(R.id.list_goods)
-    public void goodsItemClick(int position){
-        // TODO: 2017/3/2  跳转到详情页
+    public void goodsItemClick(int position) {
+        //  跳转到详情页
         ToastWrapper.show(mGoodsAdapter.getItem(position).getName());
     }
 
-    @OnClick({R.id.text_is_hot,R.id.text_most_expensive,R.id.text_cheapest})
-    public void chooseGoodsOrder(View view){
-        switch (view.getId()){
+    @OnClick({R.id.text_is_hot, R.id.text_most_expensive, R.id.text_cheapest})
+    public void chooseGoodsOrder(View view) {
+
+        // 如果当前已经是此项，就不触发
+        if (view.isActivated()) return;
+
+        // 如果在刷新，不去执行
+        if (mPtrWrapper.isRefreshing()) return;
+
+        // 三个都不是活动状态
+        for (TextView sortView :mTvOrderList) {
+            sortView.setActivated(false);
+        }
+        // 选择的某项设置为Activated
+        view.setActivated(true);
+
+        // 排序字段
+        String sortBy;
+
+        switch (view.getId()) {
             case R.id.text_is_hot:
+                sortBy = Filter.SORT_IS_HOT;
                 break;
             case R.id.text_most_expensive:
+                sortBy = Filter.SORT_PRICE_DESC;
                 break;
             case R.id.text_cheapest:
+                sortBy = Filter.SORT_PRICE_ASC;
                 break;
             default:
                 throw new UnsupportedOperationException();
         }
+        mFilter.setSortBy(sortBy);
+        mPtrWrapper.autoRefresh();
     }
 
     // 网络请求获取数据
     private void searchGoods(boolean isRefresh) {
+        if (mSearchCall !=null){
+            mSearchCall.cancel();
+        }
+
+        if (isRefresh){
+            // 刷新：页数从1开始
+            mPagination.reset();
+            // 将ListView定位到第一条
+            mGoodsListView.setSelection(0);
+        } else {
+            // 加载：页数+1
+            mPagination.next();
+            LogUtils.debug("Load More page = " + mPagination.getPage());
+        }
+
+        // 请求体
+        SearchReq searchReq = new SearchReq();
+        searchReq.setFilter(mFilter);
+        searchReq.setPagination(mPagination);
+        mSearchCall = EShopClient.getInstance()
+                .enqueue(ApiPath.SEARCH, searchReq, SearchRsp.class, mUICallback);
 
     }
+    private UICallback mUICallback = new UICallback() {
+
+        // 数据的处理
+        @Override
+        public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
+            mPtrWrapper.stopRefresh();
+            mSearchCall = null;
+            if (isSucces) {
+                SearchRsp searchRsp = (SearchRsp) responseEntity;
+                // 将分页结果拿出来，便于判断下次加载需要需要进行
+                mPaginated = searchRsp.getPaginated();
+
+                // 设置数据给适配器
+                List<SimpleGoods> goodsList = searchRsp.getData();
+                if (mPagination.isFirst()) {
+                    // 刷新
+                    mGoodsAdapter.reset(goodsList);
+                } else {
+                    // 加载
+                    mGoodsAdapter.addAll(goodsList);
+                }
+            }
+        }
+    };
 }
