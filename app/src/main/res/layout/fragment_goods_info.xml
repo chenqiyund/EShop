@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none">
@@ -10,24 +12,25 @@
         android:paddingBottom="@dimen/spacing_normal">
 
         <!--商品详情页图片切换-->
-        <!--
-                <com.feicuiedu.eshop.base.widgets.SquareLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <android.support.v4.view.ViewPager
-                        android:id="@+id/pager_goods_pictures"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/white"/>
-                    <me.relex.circleindicator.CircleIndicator
-                        android:id="@+id/indicator"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/size_45"
-                        android:layout_gravity="bottom"
-                        app:ci_drawable="@drawable/indicator_yellow_radius"
-                        app:ci_drawable_unselected="@drawable/white_radius"/>
-                </com.feicuiedu.eshop.base.widgets.SquareLayout>
-        -->
+        <com.feicuiedu.eshop_0221.base.widgets.SquareLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager_goods_pictures"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"/>
+
+            <me.relex.circleindicator.CircleIndicator
+                android:id="@+id/indicator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_45"
+                android:layout_gravity="bottom"
+                app:ci_drawable="@drawable/indicator_yellow_radius"
+                app:ci_drawable_unselected="@drawable/white_radius"/>
+
+        </com.feicuiedu.eshop_0221.base.widgets.SquareLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -101,5 +104,4 @@
                 android:text="@string/goods_comments"/>
         </FrameLayout>
     </LinearLayout>
-
 </ScrollView>

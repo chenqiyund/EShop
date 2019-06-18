@@ -168,6 +168,12 @@ public class GoodsActivity extends BaseActivity implements ViewPager.OnPageChang
     @Override
     public void onPageScrollStateChanged(int state) {
     }
+    // 切换页面的方法
+    public void selectPage(int position){
+        mGoodsPager.setCurrentItem(position,false);
+        chooseTab(position);
+    }
+
     // 主要是改变选中的Tab的样式：颜色和字体大小
     private void chooseTab(int position){
         Resources resources = getResources();
