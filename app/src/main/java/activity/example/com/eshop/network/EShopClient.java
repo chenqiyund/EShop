@@ -99,7 +99,8 @@ public class EShopClient {
     public <T extends ResponseEntity>T execute(ApiInterface apiInterface) throws IOException {
 
         // 把请求的构建写到一个方法里面
-        Response response = newApiCall(apiInterface).execute();
+        Response response = newApiCall(apiInterface,null).execute();
+
 
         // 异步里面会不会也用到呢？所以写到一个方法里去
         Class<T> clazz = (Class<T>) apiInterface.getResponseEntity();
@@ -107,10 +108,11 @@ public class EShopClient {
     }
     // 异步回调：最后要创建UICallBack
     public Call enqueue(ApiInterface apiInterface,
-                        UICallback uiCallback){
+                        UICallback uiCallback,
+                        String tag){
 
         // 构建call模型
-        Call call = newApiCall(apiInterface);
+        Call call = newApiCall(apiInterface,tag);
         // 告诉uicallback里面的数据要转换的类型
         uiCallback.setResponseType(apiInterface.getResponseEntity());
         // 为了规范，我们在方法里面直接执行异步方法，就需要一个UiCallback，所以通过参数传递
@@ -130,7 +132,7 @@ public class EShopClient {
     }
 
     // 根据参数构建请求
-    private Call newApiCall(ApiInterface apiInterface) {
+    private Call newApiCall(ApiInterface apiInterface,String tag) {
 
         // 拆开写
         Request.Builder builder = new Request.Builder();
@@ -144,7 +146,26 @@ public class EShopClient {
                     .build();
             builder.post(requestBody);
         }
+        builder.tag(tag);// 给请求设置tag，为了方便取消
         Request request = builder.build();
         return mOkHttpClient.newCall(request);
+    }
+    /** 通过给请求设置Tag，然后取消的时候根据判断Tag来取消:tag，构建请求的时候给请求设置的。
+     * 1. 给请求设置tag
+     * 2. 取消的方法中根据tag来取消
+     */
+    public void CancelByTag(String tag){
+        // 1. 在调度器中等待执行的---> 2. 调度器中正在执行的
+        for (Call call:mOkHttpClient.dispatcher().queuedCalls()){
+            if (call.request().tag().equals(tag)){
+                call.cancel();
+            }
+        }
+        for (Call call:mOkHttpClient.dispatcher().runningCalls()){
+            if (call.request().tag().equals(tag)){
+                call.cancel();
+            }
+        }
+
     }
 }
