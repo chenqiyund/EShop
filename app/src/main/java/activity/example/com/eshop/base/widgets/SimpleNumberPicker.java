@@ -16,7 +16,7 @@ import butterknife.OnClick;
 /**
  * Created by Administrator on 2019/6/18.
  */
-
+// 商品数量选择器
 public class SimpleNumberPicker extends RelativeLayout {
 
     @BindView(R.id.text_number)
