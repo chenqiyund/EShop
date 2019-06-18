@@ -4,6 +4,10 @@ import android.test.AndroidTestCase;
 
 import com.google.gson.Gson;
 
+import activity.example.com.eshop.network.api.ApiCategory;
+import activity.example.com.eshop.network.api.ApiHomeBanner;
+import activity.example.com.eshop.network.api.ApiHomeCategory;
+import activity.example.com.eshop.network.api.ApiSearch;
 import activity.example.com.eshop.network.entity.CategoryRsp;
 import activity.example.com.eshop.network.entity.HomeBannerRsp;
 import activity.example.com.eshop.network.entity.HomeCategoryRsp;
@@ -20,25 +24,26 @@ import static junit.framework.Assert.assertTrue;
  */
 
 public class EShopClientTest {
+    // 分类页面
     public void getCategory() throws Exception {
 
-        CategoryRsp categoryRsp = EShopClient.getInstance().execute("/category", null, CategoryRsp.class);
+        CategoryRsp categoryRsp = EShopClient.getInstance().execute(new ApiCategory());
         // 断言方法：为我们做一个判断
         assertTrue(categoryRsp.getStatus().isSucceed());
     }
-
+    // 首页：banner
     public void getHomeBanner() throws Exception{
-        HomeBannerRsp bannerRsp = EShopClient.getInstance().execute("/home/data", null, HomeBannerRsp.class);
+        HomeBannerRsp bannerRsp = EShopClient.getInstance().execute(new ApiHomeBanner());
         assertTrue(bannerRsp.getStatus().isSucceed());
     }
-
+    // 首页：分类和推荐商品
     public void getHomeCategory() throws Exception{
-        CategoryRsp categoryRsp = EShopClient.getInstance().execute("/home/category", null, CategoryRsp.class);
+        HomeCategoryRsp categoryRsp = EShopClient.getInstance().execute(new ApiHomeCategory());
         assertTrue(categoryRsp.getStatus().isSucceed());
     }
     public void getSearch() throws Exception{
-        SearchReq searchReq = new SearchReq();
-        SearchRsp searchRsp = EShopClient.getInstance().execute("/search", searchReq, SearchRsp.class);
+        ApiSearch apiSearch = new ApiSearch(null,null);
+        SearchRsp searchRsp = EShopClient.getInstance().execute(apiSearch);
         assertTrue(searchRsp.getStatus().isSucceed());
     }
 }

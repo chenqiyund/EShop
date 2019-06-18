@@ -16,6 +16,7 @@ import activity.example.com.eshop.base.BaseActivity;
 import activity.example.com.eshop.base.utils.TestFragment;
 import activity.example.com.eshop.feature.category.CategoryFragment;
 import activity.example.com.eshop.feature.home.HomeFragment;
+import activity.example.com.eshop.network.core.ResponseEntity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -39,6 +40,11 @@ public class EShopMainActivity extends BaseActivity implements OnTabSelectListen
     @Override
     protected int getContentViewLayout() {
         return R.layout.activity_eshop_main;
+    }
+
+    @Override
+    protected void onBusinessResponse(String path, boolean isSucces, ResponseEntity responseEntity) {
+
     }
 
     // 视图的初始化操作

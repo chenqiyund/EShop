@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseActivity;
+import activity.example.com.eshop.network.core.ResponseEntity;
 
 /**
  * Created by Administrator on 2019/6/18.
@@ -29,6 +30,12 @@ public class GoodsActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+
+    }
+
+    // 拿到数据处理
+    @Override
+    protected void onBusinessResponse(String path, boolean isSucces, ResponseEntity responseEntity) {
 
     }
 }

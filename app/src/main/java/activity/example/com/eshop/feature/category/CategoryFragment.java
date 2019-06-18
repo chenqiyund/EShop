@@ -27,6 +27,7 @@ import activity.example.com.eshop.base.BaseFragment;
 import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
 import activity.example.com.eshop.feature.search.SearchGoodsActivity;
 import activity.example.com.eshop.network.EShopClient;
+import activity.example.com.eshop.network.api.ApiCategory;
 import activity.example.com.eshop.network.core.ApiPath;
 import activity.example.com.eshop.network.core.ResponseEntity;
 import activity.example.com.eshop.network.core.UICallback;
@@ -61,6 +62,20 @@ public class CategoryFragment extends BaseFragment {
     }
 
 
+    // 请求拿到数据处理
+    @Override
+    protected void onBusinessResponse(String path, boolean isSucces, ResponseEntity responseEntity) {
+        if (!ApiPath.CATEGORY.equals(path)) {
+            throw new UnsupportedOperationException(path);
+        }
+        if (isSucces) {
+            CategoryRsp categoryRsp = (CategoryRsp) responseEntity;
+            mData = categoryRsp.getData();
+            // 数据有了之后，数据给一级分类，默认选择第一条，二级分类才能展示
+            updateCategory();
+        }
+    }
+
     @Override
     protected int getContentViewLayout() {
         return R.layout.fragment_category;
@@ -91,18 +106,20 @@ public class CategoryFragment extends BaseFragment {
             updateCategory();
         } else {
             // 去进行网络请求拿到数据
-            UICallback uiCallback = new UICallback() {
-                @Override
-                public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
-                    if (isSucces) {
-                        CategoryRsp categoryRsp = (CategoryRsp) responseEntity;
-                        mData = categoryRsp.getData();
-                        // 数据有了之后，数据给一级分类，默认选择第一条，二级分类才能展示
-                        updateCategory();
-                    }
-                }
-            };
-            EShopClient.getInstance().enqueue(ApiPath.CATEGORY,null,CategoryRsp.class,uiCallback);
+            enqueue(new ApiCategory());
+
+//            UICallback uiCallback = new UICallback() {
+//                @Override
+//                public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
+//                    if (isSucces) {
+//                        CategoryRsp categoryRsp = (CategoryRsp) responseEntity;
+//                        mData = categoryRsp.getData();
+//                        // 数据有了之后，数据给一级分类，默认选择第一条，二级分类才能展示
+//                        updateCategory();
+//                    }
+//                }
+//            };
+//            EShopClient.getInstance().enqueue(ApiPath.CATEGORY,null,CategoryRsp.class,uiCallback);
         }
     }
 

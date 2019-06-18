@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import activity.example.com.eshop.R;
 import activity.example.com.eshop.base.BaseActivity;
 import activity.example.com.eshop.base.utils.LogUtils;
+import activity.example.com.eshop.network.core.ResponseEntity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -30,6 +31,11 @@ public class SplashActivity extends BaseActivity implements Animator.AnimatorLis
         protected int getContentViewLayout() {
             return R.layout.activity_splash;
         }
+
+    @Override
+    protected void onBusinessResponse(String path, boolean isSucces, ResponseEntity responseEntity) {
+
+    }
 
     @Override
     protected void initView() {

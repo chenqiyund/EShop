@@ -19,6 +19,7 @@ import activity.example.com.eshop.base.wrapper.ToastWrapper;
 import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
 import activity.example.com.eshop.feature.goods.GoodsActivity;
 import activity.example.com.eshop.network.EShopClient;
+import activity.example.com.eshop.network.api.ApiSearch;
 import activity.example.com.eshop.network.core.ApiPath;
 import activity.example.com.eshop.network.core.ResponseEntity;
 import activity.example.com.eshop.network.core.UICallback;
@@ -189,32 +190,58 @@ public class SearchGoodsActivity extends BaseActivity {
         SearchReq searchReq = new SearchReq();
         searchReq.setFilter(mFilter);
         searchReq.setPagination(mPagination);
-        mSearchCall = EShopClient.getInstance()
-                .enqueue(ApiPath.SEARCH, searchReq, SearchRsp.class, mUICallback);
+        // 搜索的请求
+        ApiSearch apiSearch = new ApiSearch(mFilter,mPagination);
+        mSearchCall = enqueue(apiSearch);
 
     }
-    private UICallback mUICallback = new UICallback() {
+    //    private UICallback mUICallback = new UICallback() {
+//        // 数据的处理
+//        @Override
+//        public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
+//            mPtrWrapper.stopRefresh();
+//            mSearchCall = null;
+//            if (isSucces) {
+//                SearchRsp searchRsp = (SearchRsp) responseEntity;
+//                // 将分页结果拿出来，便于判断下次加载需要需要进行
+//                mPaginated = searchRsp.getPaginated();
+//
+//                // 设置数据给适配器
+//                List<SimpleGoods> goodsList = searchRsp.getData();
+//                if (mPagination.isFirst()) {
+//                    // 刷新
+//                    mGoodsAdapter.reset(goodsList);
+//                } else {
+//                    // 加载
+//                    mGoodsAdapter.addAll(goodsList);
+//                }
+//            }
+//        }
+//    };
 
-        // 数据的处理
-        @Override
-        public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
-            mPtrWrapper.stopRefresh();
-            mSearchCall = null;
-            if (isSucces) {
-                SearchRsp searchRsp = (SearchRsp) responseEntity;
-                // 将分页结果拿出来，便于判断下次加载需要需要进行
-                mPaginated = searchRsp.getPaginated();
+    // 拿到数据处理
+    @Override
+    protected void onBusinessResponse(String path, boolean isSucces, ResponseEntity responseEntity) {
+        if (!ApiPath.SEARCH.equals(path)){
+            throw new UnsupportedOperationException(path);
+        }
 
-                // 设置数据给适配器
-                List<SimpleGoods> goodsList = searchRsp.getData();
-                if (mPagination.isFirst()) {
-                    // 刷新
-                    mGoodsAdapter.reset(goodsList);
-                } else {
-                    // 加载
-                    mGoodsAdapter.addAll(goodsList);
-                }
+        mPtrWrapper.stopRefresh();
+        mSearchCall = null;
+        if (isSucces) {
+            SearchRsp searchRsp = (SearchRsp) responseEntity;
+            // 将分页结果拿出来，便于判断下次加载需要需要进行
+            mPaginated = searchRsp.getPaginated();
+
+            // 设置数据给适配器
+            List<SimpleGoods> goodsList = searchRsp.getData();
+            if (mPagination.isFirst()) {
+                // 刷新
+                mGoodsAdapter.reset(goodsList);
+            } else {
+                // 加载
+                mGoodsAdapter.addAll(goodsList);
             }
         }
-    };
+    }
 }

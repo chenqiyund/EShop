@@ -27,6 +27,8 @@ import activity.example.com.eshop.base.wrapper.ToastWrapper;
 import activity.example.com.eshop.base.wrapper.ToolbarWrapper;
 import activity.example.com.eshop.feature.goods.GoodsActivity;
 import activity.example.com.eshop.network.EShopClient;
+import activity.example.com.eshop.network.api.ApiHomeBanner;
+import activity.example.com.eshop.network.api.ApiHomeCategory;
 import activity.example.com.eshop.network.core.ApiPath;
 import activity.example.com.eshop.network.core.ResponseEntity;
 import activity.example.com.eshop.network.core.UICallback;
@@ -85,7 +87,10 @@ public class HomeFragment extends BaseFragment {
             protected void onRefresh() {
                 mBannerRefreshed = false;
                 mCategoryRefreshed = false;
-                getHomeData();
+                // 轮播图的数据获取
+                enqueue(new ApiHomeBanner());
+                // 分类及推荐商品数据
+                enqueue(new ApiHomeCategory());
             }
 
             @Override
@@ -128,47 +133,44 @@ public class HomeFragment extends BaseFragment {
     }
 
     // 去请求数据
-    public void getHomeData() {
-
-        // 轮播图和促销单品的数据
-        UICallback bannerCallback = new UICallback() {
-
-            @Override
-            public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
-                mBannerRefreshed = true;
-                if (isSucces){
-                    // 数据拿到了，首先给bannerAdapter,另外是给促销单品
-                    HomeBannerRsp bannerRsp = (HomeBannerRsp) responseEntity;
-                    mBannerAdapter.reset(bannerRsp.getData().getBanners());
-                    setPromoteGoods(bannerRsp.getData().getGoodsList());
-                }
-                if (mBannerRefreshed && mCategoryRefreshed) {
-                    //两个接口都拿到数据之后，停止刷新
-                    mPtrWrapper.stopRefresh();
-                }
-            }
-        };
-
-        // 首页分类商品和推荐
-        UICallback categoryCallback = new UICallback() {
-
-            @Override
-            public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
-                mCategoryRefreshed = true;
-                if (isSucces) {
-                    HomeCategoryRsp categoryRsp = (HomeCategoryRsp) responseEntity;
-                    mGoodsAdapter.reset(categoryRsp.getData());
-                }
-                if (mBannerRefreshed && mCategoryRefreshed) {
-                    //两个接口都拿到数据之后，停止刷新
-                    mPtrWrapper.stopRefresh();
-                }
-            }
-
-        };
-        EShopClient.getInstance().enqueue(ApiPath.HOME_DATA,null,HomeBannerRsp.class,bannerCallback);
-        EShopClient.getInstance().enqueue(ApiPath.HOME_CATEGORY,null,HomeCategoryRsp.class,categoryCallback);
-    }
+//    public void getHomeData() {
+//
+//        // 轮播图和促销单品的数据
+//        UICallback bannerCallback = new UICallback() {
+//            @Override
+//            public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
+//                mBannerRefreshed = true;
+//                if (isSucces){
+//                    // 数据拿到了，首先给bannerAdapter,另外是给促销单品
+//                    HomeBannerRsp bannerRsp = (HomeBannerRsp) responseEntity;
+//                    mBannerAdapter.reset(bannerRsp.getData().getBanners());
+//                    setPromoteGoods(bannerRsp.getData().getGoodsList());
+//                }
+//                if (mBannerRefreshed && mCategoryRefreshed){
+//                    //两个接口都拿到数据之后，停止刷新
+//                    mPtrWrapper.stopRefresh();
+//                }
+//            }
+//        };
+//
+//        // 首页分类商品和推荐
+//        UICallback categoryCallback = new UICallback() {
+//            @Override
+//            public void onBusinessResponse(boolean isSucces, ResponseEntity responseEntity) {
+//                mCategoryRefreshed = true;
+//                if(isSucces){
+//                    HomeCategoryRsp categoryRsp = (HomeCategoryRsp) responseEntity;
+//                    mGoodsAdapter.reset(categoryRsp.getData());
+//                }
+//                if (mBannerRefreshed && mCategoryRefreshed){
+//                    //两个接口都拿到数据之后，停止刷新
+//                    mPtrWrapper.stopRefresh();
+//                }
+//            }
+//        };
+//        EShopClient.getInstance().enqueue(ApiPath.HOME_DATA,null,HomeBannerRsp.class,bannerCallback);
+//        EShopClient.getInstance().enqueue(ApiPath.HOME_CATEGORY,null,HomeCategoryRsp.class,categoryCallback);
+//    }
 
     // 设置促销单品的展示
     private void setPromoteGoods(List<SimpleGoods> goodsList) {
@@ -194,6 +196,42 @@ public class HomeFragment extends BaseFragment {
                     getActivity().startActivity(intent);
                 }
             });
+        }
+    }
+    // 拿到响应数据处理
+    @Override
+    protected void onBusinessResponse(String path, boolean isSucces, ResponseEntity responseEntity) {
+        switch (path){
+            // 轮播图请求数据
+            case ApiPath.HOME_DATA:
+
+                mBannerRefreshed = true;
+                if (isSucces){
+                    // 数据拿到了，首先给bannerAdapter,另外是给促销单品
+                    HomeBannerRsp bannerRsp = (HomeBannerRsp) responseEntity;
+                    mBannerAdapter.reset(bannerRsp.getData().getBanners());
+                    setPromoteGoods(bannerRsp.getData().getGoodsList());
+                }
+
+                break;
+
+            // 分类和推荐的请求数据
+            case ApiPath.HOME_CATEGORY:
+
+                mCategoryRefreshed = true;
+                if(isSucces){
+                    HomeCategoryRsp categoryRsp = (HomeCategoryRsp) responseEntity;
+                    mGoodsAdapter.reset(categoryRsp.getData());
+                }
+
+                break;
+            default:
+                throw new UnsupportedOperationException(path);
+        }
+
+        if (mBannerRefreshed && mCategoryRefreshed){
+            //两个接口都拿到数据之后，停止刷新
+            mPtrWrapper.stopRefresh();
         }
     }
 }
