@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Administrator on 2019/6/18.
  */
-
+// 商品规格
 public class GoodsSpec {
     public static final int ATTR_TYPE_UNIQUE = 0;
     public static final int ATTR_TYPE_SINGLE = 1;

@@ -5,10 +5,12 @@ import android.test.AndroidTestCase;
 import com.google.gson.Gson;
 
 import activity.example.com.eshop.network.api.ApiCategory;
+import activity.example.com.eshop.network.api.ApiGoodsInfo;
 import activity.example.com.eshop.network.api.ApiHomeBanner;
 import activity.example.com.eshop.network.api.ApiHomeCategory;
 import activity.example.com.eshop.network.api.ApiSearch;
 import activity.example.com.eshop.network.entity.CategoryRsp;
+import activity.example.com.eshop.network.entity.GoodsInfoRsp;
 import activity.example.com.eshop.network.entity.HomeBannerRsp;
 import activity.example.com.eshop.network.entity.HomeCategoryRsp;
 import activity.example.com.eshop.network.entity.SearchReq;
@@ -45,5 +47,12 @@ public class EShopClientTest {
         ApiSearch apiSearch = new ApiSearch(null,null);
         SearchRsp searchRsp = EShopClient.getInstance().execute(apiSearch);
         assertTrue(searchRsp.getStatus().isSucceed());
+    }
+    // 商品详情的请求
+
+    public void getGoodsInfo() throws Exception{
+        ApiGoodsInfo apiGoodsInfo = new ApiGoodsInfo(78);
+        GoodsInfoRsp goodsInfoRsp = EShopClient.getInstance().execute(apiGoodsInfo);
+        assertTrue(goodsInfoRsp.getStatus().isSucceed());
     }
 }
